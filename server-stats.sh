@@ -88,3 +88,10 @@ read_disk() {
 echo
 echo "=== Диск ==="
 read_disk
+
+# ------------------------------------------------------------ ШАГ 4: топ-5 по CPU
+
+echo
+echo "=== Топ-5 процессов по CPU ==="
+ps -eo pid,user,%cpu,%mem,etime,comm --sort=-%cpu | head -6
+printf 'Внимание: %%CPU у ps — среднее за время жизни процесса (см. ELAPSED).\n'
