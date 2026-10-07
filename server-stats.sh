@@ -60,3 +60,31 @@ echo "Занято:      ${m_used} MiB  (${m_pct}%)   = Всего - Досту�
 echo "Свободно:    ${m_free} MiB"
 echo "Буферы/кеш:  ${m_cache} MiB"
 echo "Доступно:    ${m_avail} MiB   <- на это можно рассчитывать"
+
+# ------------------------------------------------------------ ШАГ 3: диск
+
+read_disk() {
+  df -Pk 2>/dev/null | awk '
+    function hum(kb,   b, i, u) {
+      split("B kB MB GB TB PB", u, " ")
+      b = kb * 1024
+      i = 1
+      while (b >= 1024 && i < 6) { b /= 1024; i++ }
+      return sprintf("%.1f %s", b, u[i])
+    }
+    NR == 1 { next }      # заголовок df пропускаем
+    $1 ~ /^(tmpfs|devtmpfs|udev|overlay|squashfs|none|shm|efivarfs)$/ { next }
+    {
+      tot += $2; used += $3; avail += $4
+      printf "%-22s %10s %10s %10s %7s  %s\n",
+             $1, hum($2), hum($3), hum($4), $5, $6
+    }
+    END {
+      printf "%-22s %10s %10s %10s %7.1f%%\n",
+             "ИТОГО", hum(tot), hum(used), hum(avail), used * 100 / tot
+    }'
+}
+
+echo
+echo "=== Диск ==="
+read_disk
