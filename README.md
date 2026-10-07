@@ -3,6 +3,8 @@
 A small Bash script that prints a quick snapshot of a Linux server's health:
 CPU load, memory usage, disk usage, and the top 5 processes by CPU and memory.
 
+Project URL: https://roadmap.sh/projects/server-stats
+
 No dependencies beyond the standard tools — every metric is read from `/proc`
 or from `ps` / `df`, which are present on any Linux system.
 
